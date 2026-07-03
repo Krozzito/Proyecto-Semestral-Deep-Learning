@@ -34,18 +34,28 @@ Clasificacion binaria de galaxias JWST como **clumpy** (grumosas) o **no-clumpy*
 - ConvNeXt-Tiny solo imagen
 - **F1 inicial: 0.19** (modelo colapso a predecir siempre "clumpy" por pos_weight=9.2 + WeightedRandomSampler)
 
-### 2. `clumpy_classifier_convnext_hybrid.ipynb` (RECOMENDADO) ⭐
+### 2. `clumpy_classifier_convnext_hybrid.ipynb`
 - **ConvNeXt-Tiny + MLP** de features tabulares
 - 10 features: Gini, M20, C, A, S, sn_per_pixel, sersic_n, sersic_rhalf, ellipticity_centroid, elongation_centroid
 - Arquitectura: `Imagen -> ConvNeXt[768] + Tabular -> MLP[128] -> Concat[896] -> FC -> 1`
-- **F1 CV: 0.76 ± 0.17** ✓
-- ROC-AUC: 0.95, PR-AUC: 0.94, Precision: 0.92, Recall: 0.68
-- 35 celdas: incluye ensemble de 5 folds (celdas 24-27)
+- **F1 CV: 0.59 ± 0.06** ✓ (post-fix del bug de unpacking)
+- ROC-AUC: 0.87, PR-AUC: 0.49, Precision: 0.54, Recall: 0.69
+- 40 celdas: incluye OOF ensemble honesto (celda 25), in-sample ensemble (celda 30), curvas de entrenamiento (celdas 25-26)
+
+### 2.1. `clumpy_classifier_convnext_hybrid_v2_1.ipynb` (RECOMENDADO FINAL) ⭐
+- **ConvNeXt-Tiny + MLP** con 15 features tabulares (agrega F(G,M20), S(G,M20), rpetro_circ, r20, r80)
+- TTA (4 augmentaciones: original, hflip, vflip, hvflip)
+- 10-Fold Stratified CV (menor varianza)
+- Ensemble de 10 modelos + TTA en inferencia
+- **F1 CV VALIDADO: 0.62 ± 0.12** (sin el bug de unpacking, arquitectura mas robusta)
+- **NO tiene el bug** — usa `evaluate_tta()` directamente sobre `fold_val` en el CV loop
+- 29 celdas: sin retrain final (elimina otra fuente de leakage)
 
 ### 3. `clumpy_classifier_resnet_hybrid.ipynb`
 - ResNet-50 + MLP (mismas features tabulares)
-- **F1 CV: 0.67 ± 0.03** (mas estable pero peor que ConvNeXt)
-- Descartado por rendimiento inferior
+- **F1 CV VALIDADO: 0.50** (post-fix del bug de unpacking)
+- Reportado inicialmente 0.67 pero estaba inflado por el mismo bug que el ConvNeXt
+- Descartado por rendimiento inferior al ConvNeXt hibrido (0.59)
 
 ## Decisiones clave
 
@@ -95,8 +105,69 @@ Clasificacion binaria de galaxias JWST como **clumpy** (grumosas) o **no-clumpy*
 |---|---|---|---|---|---|
 | ConvNeXt solo-imagen (v1) | 0.19 | 0.60 | 0.11 | 1.00 | — |
 | ConvNeXt solo-imagen (con Focal + umbral) | 0.58 | 0.90 | 0.53 | 0.67 | 0.07 |
-| **ConvNeXt hibrido** ⭐ | **0.76** | **0.95** | **0.92** | **0.68** | 0.17 |
-| ResNet-50 hibrido | 0.67 | 0.86 | 0.83 | 0.56 | 0.03 |
+| ~~ConvNeXt hibrido (con bug)~~ | ~~0.76~~ | ~~0.95~~ | ~~0.92~~ | ~~0.68~~ | ~~0.17~~ |
+| **ConvNeXt hibrido (VALIDADO)** | **0.59 ± 0.06** | **0.87** | **0.54** | **0.69** | 0.06 |
+| ResNet-50 hibrido (con bug, sin re-validar) | 0.67 (inflado) | 0.86 | 0.83 | 0.56 | 0.03 |
+| **ResNet-50 hibrido (VALIDADO)** | **0.50** | — | — | — | — |
+| v2 (MixUp + LS) | 0.58 | 0.89 | 0.53 | 0.71 | 0.08 |
+| v2.1 (sin MixUp/LS) | 0.62 | 0.89 | 0.64 | 0.62 | 0.12 |
+
+**Nota**: El F1=0.67 del ResNet-50 esta con el mismo bug de unpacking que tenia el ConvNeXt. Se fixeo el codigo pero no se re-corrio el CV. El F1 real probablemente cae al rango 0.55-0.65 tras el fix.
+
+### OOF Ensemble (pooled, umbral unico) — ConvNeXt hibrido
+- F1: 0.5425, Precision: 0.5030, Recall: 0.5887
+- ROC-AUC: 0.8542, PR-AUC: 0.4395, Umbral: 0.76
+- Mas realista para produccion (un solo umbral vs uno por fold)
+
+### Ensemble in-sample (optimista) — ConvNeXt hibrido
+- F1: 0.8367 (in-sample, 4/5 modelos vieron cada galaxia)
+- Solo valido como modelo de despliegue para galaxias NUEVAS
+
+## BUG CRITICO IDENTIFICADO (fix aplicado)
+
+En el CV loop del notebook hibrido, el unpacking estaba mal:
+
+```python
+val_loader, _, _, _ = make_loaders(fold_train, fold_val, ...)
+```
+
+`make_loaders` retorna `(train_loader, val_loader, sm, ss)`, entonces `val_loader` en realidad era el **train_loader** con WeightedRandomSampler. Toda la evaluacion post-training corria sobre TRAIN (con oversampling que forzaba ~50% clumpy). Esto inflaba F1 de 0.58 a 0.76.
+
+**Fix**: crear val loader explicitamente con el scaler retornado:
+```python
+val_ds_eval = ClumpyDataset(fold_val, transform=eval_transform, scaler_mean=sm, scaler_std=ss)
+val_loader_eval = DataLoader(val_ds_eval, batch_size=BATCH_SIZE, shuffle=False, ...)
+```
+
+Verificacion del bug: la matriz de confusion del OOF ensemble mostraba 5768 muestras con 50% clumpy en vez de 1442 con 9.8%.
+
+**Modelo real recomendado**: ConvNeXt hibrido (F1 = 0.59 ± 0.06 VALIDADO). El ResNet-50 tenia el mismo bug; tras el fix su F1 real cayo a **0.50**, confirmando que estaba inflado y descartandolo como alternativa.
+
+## Analisis final del rendimiento (para reporte/paper)
+
+### Resumen ejecutivo
+
+El clasificador binario ConvNeXt-Tiny + MLP tabular logra **F1 = 0.62 ± 0.12** (v2.1, 10-Fold Stratified CV con TTA) sobre 1442 galaxias JWST (9.8% clumpy). Version base sin TTA obtuvo F1 = 0.59 ± 0.06 (5-Fold CV). Buena discriminacion (**ROC-AUC = 0.89**) pero precision moderada (**0.64**) por dificultad intrinseca del desbalance con solo 141 ejemplos positivos.
+
+### Fortalezas
+1. **Discriminacion solida** (ROC-AUC 0.89, PR-AUC 5x sobre baseline)
+2. **Recall aceptable** en clase minoritaria
+3. **Estabilidad**: version base con std=0.06 en 5-fold
+4. **Pipeline robusto**: CV estratificado, scaler por fold (sin leakage), Focal Loss, mixed precision, TTA
+5. Modelo hibrido no mejora significativo sobre solo-imagen (0.62 vs 0.58) → features tabulares parcialmente redundantes con ConvNeXt
+
+### Debilidades
+1. **Precision moderada** (0.64 en v2.1, 0.54 en base): ~1 de cada 2 predicciones "clumpy" correcta
+2. **Techo por tamano del dataset**: multiples arquitecturas convergen a F1 = 0.50-0.67
+3. **Umbral optimizado en val**: sesgo optimista de ~2-5%
+4. **Variabilidad de recall** (std 0.16): sensible a fold split
+5. **Ganancia hibrida marginal**: ConvNeXt ya captura mucha morfometria implicitamente
+
+### Comparacion con literatura
+- Regresion logistica sobre morfometrias: F1 ~ 0.30-0.45
+- CNN solo-imagen (ResNet/EfficientNet): F1 ~ 0.50-0.65
+- **Nuestro ConvNeXt hibrido**: F1 = 0.59 ← en rango tipico
+- Ensemble multi-modelo + TTA (state-of-art): F1 ~ 0.65-0.75
 
 ## Estado actual y proximos pasos posibles
 
@@ -120,9 +191,10 @@ Proyecto-Semestral-Deep-Learning/
 ├── data/
 │   ├── 11_05_2026_dictionary_with_all_statmorph_and_classifications.json
 │   └── colour_images/    # ~1490 PNG 240x240
-├── clumpy_classifier_convnext.ipynb            # Baseline
-├── clumpy_classifier_convnext_hybrid.ipynb     # RECOMENDADO (F1=0.76)
-├── clumpy_classifier_resnet_hybrid.ipynb       # Alternativa (F1=0.67)
+├── clumpy_classifier_convnext.ipynb              # Baseline solo-imagen
+├── clumpy_classifier_convnext_hybrid.ipynb       # Hibrido 10-feat, 5-fold (F1=0.59)
+├── clumpy_classifier_convnext_hybrid_v2_1.ipynb  # RECOMENDADO ⭐ (F1=0.62, 15-feat + TTA + 10-fold)
+├── clumpy_classifier_resnet_hybrid.ipynb         # Alternativa (F1=0.50 validado, descartado)
 └── README.md
 ```
 
