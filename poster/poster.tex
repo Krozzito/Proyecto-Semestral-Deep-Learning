@@ -21,12 +21,10 @@
 % =====================================================================
 % Paleta de colores
 % =====================================================================
-\definecolor{astrodark}{HTML}{0A0E27}
 \definecolor{astroblue}{HTML}{223C6A}
 \definecolor{astrogold}{HTML}{E69B0A}
 \definecolor{astrogray}{HTML}{A0A0A0}
 \definecolor{astroblack}{HTML}{000000}
-\definecolor{astrolight}{HTML}{F0F0F0}
 \definecolor{clumpyred}{HTML}{D21428}
 \definecolor{noclumpygray}{HTML}{A0A0A0}
 
@@ -35,7 +33,7 @@
 % =====================================================================
 \newcommand{\seccion}[2]{%
   \tikz[baseline=-0.85ex]{\node[circle, fill=astrogold, minimum size=1.1cm,
-        inner sep=0pt, font=\bfseries\large, text=astrodark] {#1};}%
+        inner sep=0pt, font=\bfseries\large, text=astroblack] {#1};}%
   \hspace{3mm}#2%
 }
 
@@ -49,7 +47,7 @@
 }{
     \begin{scope}[line width=\titlelinewidth,
                   rounded corners=\titleroundedcorners]
-        \fill[color=astrodark] (\titleposleft, \titleposbottom)
+        \fill[color=astroblue] (\titleposleft, \titleposbottom)
             rectangle (\titleposright, \titlepostop);
         \foreach \i in {1,...,26}{
             \pgfmathsetmacro{\xoff}{Mod(\i*173,780)+10}
@@ -76,7 +74,7 @@
     bodyverticalshift=0pt, roundedcorners=8, linewidth=2pt,
     titleinnersep=5mm, bodyinnersep=5mm
 }{
-    \draw[color=astroblue, fill=astrolight, line width=\blocklinewidth,
+    \draw[color=astroblue, fill=astrogray!10, line width=\blocklinewidth,
           rounded corners=\blockroundedcorners] (blockbody.south west)
         rectangle (blockbody.north east);
     \ifBlockHasTitle
@@ -89,8 +87,8 @@
 
 \colorlet{blocktitlebgcolor}{astroblue}
 \colorlet{blocktitlefgcolor}{astrogold}
-\colorlet{blockbodybgcolor}{astrolight}
-\colorlet{blockbodyfgcolor}{astrodark}
+\colorlet{blockbodybgcolor}{astrogray!10}
+\colorlet{blockbodyfgcolor}{astroblack}
 \colorlet{backgroundcolor}{white}
 
 % =====================================================================
