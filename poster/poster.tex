@@ -1,5 +1,5 @@
-\documentclass[25pt, a0paper, portrait, margin=0mm, innermargin=15mm,
-               blockverticalspace=15mm, colspace=15mm, subcolspace=8mm]{tikzposter}
+\documentclass[20pt, a0paper, portrait, margin=0mm, innermargin=8mm,
+               blockverticalspace=5mm, colspace=7mm, subcolspace=3mm]{tikzposter}
 
 \usepackage[utf8]{inputenc}
 \usepackage[spanish,es-nodecimaldot]{babel}
@@ -8,6 +8,7 @@
 \usepackage{amsmath, amssymb}
 \usepackage{graphicx}
 \usepackage{booktabs}
+\usepackage{colortbl}
 \usepackage{array}
 \usepackage{tikz}
 \usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, backgrounds, fit}
@@ -15,30 +16,52 @@
 \usepackage{qrcode}
 \usepackage{multicol}
 \usepackage{siunitx}
+\usepackage{seqsplit}
 
 % =====================================================================
-% Paleta de colores estilo astronomia
+% Paleta de colores
 % =====================================================================
 \definecolor{astrodark}{HTML}{0A0E27}
-\definecolor{astroblue}{HTML}{1B2A5C}
-\definecolor{astrogold}{HTML}{FFD700}
-\definecolor{astrocyan}{HTML}{4FC3F7}
-\definecolor{astrolight}{HTML}{E8EEF7}
-\definecolor{clumpyred}{HTML}{E63946}
-\definecolor{noclumpygreen}{HTML}{2A9D8F}
+\definecolor{astroblue}{HTML}{223C6A}
+\definecolor{astrogold}{HTML}{E69B0A}
+\definecolor{astrogray}{HTML}{A0A0A0}
+\definecolor{astrolight}{HTML}{F0F0F0}
+\definecolor{clumpyred}{HTML}{D21428}
+\definecolor{noclumpygray}{HTML}{A0A0A0}
 
 % =====================================================================
-% Estilo personalizado del poster
+% Insignia circular numerada
+% =====================================================================
+\newcommand{\seccion}[2]{%
+  \tikz[baseline=-0.85ex]{\node[circle, fill=astrogold, minimum size=1.1cm,
+        inner sep=0pt, font=\bfseries\large, text=astrodark] {#1};}%
+  \hspace{3mm}#2%
+}
+
+% =====================================================================
+% Estilo del título
 % =====================================================================
 \definetitlestyle{astrotitle}{
-    width=1150mm, roundedcorners=15, linewidth=3pt,
-    innersep=15pt, titletotopverticalspace=15mm,
-    titletoblockverticalspace=15mm
+    width=800mm, roundedcorners=15, linewidth=3pt,
+    innersep=12pt, titletotopverticalspace=5mm,
+    titletoblockverticalspace=6mm
 }{
     \begin{scope}[line width=\titlelinewidth,
                   rounded corners=\titleroundedcorners]
         \fill[color=astrodark] (\titleposleft, \titleposbottom)
             rectangle (\titleposright, \titlepostop);
+        \foreach \i in {1,...,26}{
+            \pgfmathsetmacro{\xoff}{Mod(\i*173,780)+10}
+            \pgfmathsetmacro{\yoff}{Mod(\i*97,14)+4}
+            \pgfmathsetmacro{\rr}{Mod(\i*29,15)/10+0.5}
+            \fill[astrogold,opacity=0.55] ($(\titleposleft,\titlepostop)+(\xoff mm,-\yoff mm)$) circle (\rr mm);
+        }
+        \foreach \i in {1,...,20}{
+            \pgfmathsetmacro{\xoff}{Mod(\i*211,780)+10}
+            \pgfmathsetmacro{\yoff}{Mod(\i*61,10)+3}
+            \pgfmathsetmacro{\rr}{Mod(\i*17,12)/10+0.4}
+            \fill[astrogray,opacity=0.5] ($(\titleposleft,\titleposbottom)+(\xoff mm,\yoff mm)$) circle (\rr mm);
+        }
         \draw[color=astrogold] (\titleposleft, \titleposbottom)
             rectangle (\titleposright, \titlepostop);
     \end{scope}
@@ -50,7 +73,7 @@
     titleoffsetx=0pt, titleoffsety=0pt,
     bodyoffsetx=0pt, bodyoffsety=0pt,
     bodyverticalshift=0pt, roundedcorners=8, linewidth=2pt,
-    titleinnersep=8mm, bodyinnersep=8mm
+    titleinnersep=5mm, bodyinnersep=5mm
 }{
     \draw[color=astroblue, fill=astrolight, line width=\blocklinewidth,
           rounded corners=\blockroundedcorners] (blockbody.south west)
@@ -70,409 +93,365 @@
 \colorlet{backgroundcolor}{white}
 
 % =====================================================================
-% Metadata del poster
+% Metadata
 % =====================================================================
 \title{\parbox{\linewidth}{\centering
-    \color{astrogold}\fontsize{80}{95}\selectfont\bfseries
-    Clasificacion Automatica de Galaxias Clumpy \\[8pt]
-    \color{astrocyan}\fontsize{55}{65}\selectfont\bfseries
-    en Imagenes JWST usando Deep Learning Hibrido
+    \color{astrogold}\fontsize{72}{85}\selectfont\bfseries
+    Clasificación Automática de Galaxias Clumpy \\[5pt]
+    \color{astrogray}\fontsize{48}{58}\selectfont\bfseries
+    Comparativa de Arquitecturas Deep Learning en Imágenes JWST
 }}
 \author{\color{white}\Large\bfseries
-    Autor: [TU NOMBRE] \quad$|$\quad
-    Guia: [NOMBRE DEL GUIA] \quad$|$\quad
-    [DEPARTAMENTO / CARRERA]
+    Autor: Daniel Ignacio Soto Salgado, Cristóbal Figueroa, Iván Zapata, Joaquín Ávalos
+    \quad{\color{astrogold}$\bigstar$}\quad
+    \\
+    Profesores: Guillermo Cabrera, Ricardo Flores  \quad{\color{astrogold}$\bigstar$}\quad
+    Ingeniería Civil Informática
 }
-\institute{\color{astrocyan}\normalsize
-    [UNIVERSIDAD] \quad$\cdot$\quad Proyecto Semestral de Deep Learning \quad$\cdot$\quad 2026
+\institute{\color{astrogray}\normalsize
+    Universidad de Concepción \quad$\cdot$\quad Proyecto Semestral de Deep Learning \quad$\cdot$\quad 2026
 }
 \titlegraphic{
-    % Espacio para logo universidad. Reemplazar path por logo real.
-    % \includegraphics[width=8cm]{logo_universidad.png}
     \color{astrogold}\Huge$\bigstar$
 }
 
 \begin{document}
-\maketitle[titletotopverticalspace=15mm]
+\maketitle[titletotopverticalspace=6mm]
 
 % =====================================================================
-% BLOQUE SUPERIOR: RESUMEN + METRICAS DESTACADAS
+% BLOQUE SUPERIOR: RESUMEN + MÉTRICAS
 % =====================================================================
 \begin{columns}
-\column{0.65}
-\block{Resumen}{
+\column{0.55}
+\block{Resumen Comparativo}{
 \large
-Presentamos un clasificador binario para detectar galaxias \textbf{clumpy}
-(con morfologia grumosa, asociada a formacion estelar intensa) en imagenes
-del telescopio \textbf{James Webb (JWST)}. La version final (\textbf{v2.1})
-combina un backbone convolucional moderno (\textbf{ConvNeXt-Tiny}
-pre-entrenado en ImageNet) con un perceptron multicapa (\textbf{MLP})
-que procesa \textbf{15 morfometrias estadisticas} (Gini, $M_{20}$,
-$F(G, M_{20})$, $S(G, M_{20})$, concentracion, asimetria, suavidad, Sersic,
-radios de Petrosian). Entrenado con \textbf{Focal Loss}, validado con
-\textbf{10-Fold Stratified CV + Test-Time Augmentation} y desplegado como
-\textbf{ensemble de 10 modelos}, alcanza \textbf{F1 = 0.62 $\pm$ 0.12} y
-\textbf{ROC-AUC = 0.89} sobre 1442 galaxias con severo desbalance (9.8\% clumpy).
-El pipeline fue sometido a auditoria completa que detecto y corrigio
-\textit{data leakage} de una version previa.
+Presentamos una \textbf{comparativa empírica} de tres arquitecturas deep learning para clasificar galaxias \textbf{clumpy} (morfología grumosa, formación estelar intensa) en imágenes \textbf{JWST}. Evaluamos: (1) \textbf{ConvNeXt-Tiny} solo imagen, (2) \textbf{ConvNeXt-Tiny + MLP} híbrido con 15 morfometrías estadísticas, y (3) \textbf{ResNet-50 + MLP} híbrido. Todos entrenados con \textbf{Focal Loss} para manejar desbalance severo (9.8\% clumpy), validados con \textbf{Stratified CV} (5 o 10 folds) y desplegados como \textbf{ensemble}. El modelo \textbf{ConvNeXt híbrido v2.1} alcanza el mejor F1 = \textbf{0.62 $\pm$ 0.12} y ROC-AUC = \textbf{0.89}, superando a ResNet-50 (F1=0.50) y al baseline solo-imagen (F1=0.58). El pipeline fue auditado para detectar y corregir \textit{data leakage} en versiones previas.
 }
 
-\column{0.35}
-\block{Metricas Finales}{
+\column{0.45}
+\block{Métricas Finales (Comparativa)}{
+\vspace{6.1mm}
 \centering\large
-\begin{tabular}{lr}
+\begin{tabular}{|l|c|c|c|}
 \toprule
-\rowcolor{astroblue!20} \textbf{Metrica} & \textbf{Valor} \\
+\rowcolor{astroblue!15} \textbf{Modelo} & \textbf{F1} & \textbf{ROC-AUC} & \textbf{PR-AUC} \\
 \midrule
-F1-Score       & \textbf{0.62 $\pm$ 0.12} \\
-ROC-AUC        & \textbf{0.89}            \\
-PR-AUC         & 0.51                     \\
-Precision      & 0.64                     \\
-Recall         & 0.62                     \\
-Accuracy       & 0.91                     \\
+ConvNeXt-Tiny (solo imagen)          & 0.58 $\pm$ 0.07 & 0.90 & 0.49 \\
+\rowcolor{astrogold!20}
+\textbf{ConvNeXt híbrido v2.1} $\star$ & \textbf{0.62 $\pm$ 0.12} & \textbf{0.89} & \textbf{0.57} \\
+ResNet-50 híbrido                    & 0.50            & 0.86 & 0.38 \\
 \bottomrule
 \end{tabular}
-\vspace{5mm}
+\vspace{2mm}
 
 \small\color{astroblue}
-\textit{10-Fold CV con TTA sobre 1442 galaxias}
+\textit{Validación cruzada estratificada sobre 1442 galaxias JWST}
+\vspace{6.1mm}
 }
 \end{columns}
 
 % =====================================================================
-% FILA 1: INTRODUCCION | METODOLOGIA | RESULTADOS
+% FILA 1: 4 COLUMNAS (INTRO + 3 MODELOS)
 % =====================================================================
 \begin{columns}
 
-% -------- COLUMNA 1 --------
-\column{0.34}
-\block{1. Introduccion y Motivacion}{
+% -------- COLUMNA 1: INTRODUCCIÓN + DATASET --------
+\column{0.25}
+\block{\seccion{1}{Introducción}}{
 \large
-Las \textbf{galaxias clumpy} presentan multiples nucleos brillantes en su
-morfologia, indicadores de \textbf{formacion estelar intensa} en el universo
-temprano. Su clasificacion es clave para entender la evolucion galactica,
-pero requiere inspeccion visual experto por experto, un proceso lento e
-inconsistente entre miles de objetos catalogados.
+Las \textbf{galaxias clumpy} presentan múltiples núcleos brillantes, indicadores de \textbf{formación estelar intensa} en el universo temprano. Su clasificación automática es clave para entender la evolución galáctica, pero requiere superar el desbalance severo (solo 9.8\% son clumpy).
 
-\vspace{4mm}
-\textbf{Objetivo:} Desarrollar un clasificador automatico binario
-(\textit{clumpy vs no-clumpy}) que aproveche tanto las imagenes JWST como
-las morfometrias estadisticas ya calculadas, superando enfoques puramente
-visuales o puramente numericos.
-
-\vspace{4mm}
-\textbf{Contribuciones:}
-\begin{itemize}
-\item Arquitectura hibrida \textbf{imagen + tabular} (ConvNeXt + MLP) para clasificacion morfologica
-\item Manejo riguroso del desbalance severo (9.8\% clase positiva) con Focal Loss + WeightedRandomSampler
-\item Pipeline validado con \textbf{10-Fold CV honesto} + TTA + ensemble de 10 modelos
-\item \textbf{Auditoria completa} que detecto y corrigio bugs de \textit{data leakage} en versiones previas
-\item Analisis comparativo de 5 configuraciones (baseline solo-imagen, hibrido base, ResNet-50, v2 con MixUp/LS, v2.1 final)
+\vspace{2mm}
+\textbf{Dataset:}
+\begin{itemize}\itemsep1pt
+\item \textbf{1442 galaxias} JWST/NIRCam (PNG RGB 240$\times$240 px)
+\item \textbf{Clumpy:} \textcolor{clumpyred}{141 (9.8\%)}
+\item \textbf{No clumpy:} \textcolor{noclumpygray}{1301 (90.2\%)}
+\item \textbf{15 morfometrías} (statmorph): Gini, $M_{20}$, $F(G, M_{20})$, $S(G, M_{20})$, concentración, asimetría, suavidad, Sérsic $n$, $r_{\text{half}}$, ellipticidad, elongación, $r_{\text{petro,circ}}$, $r_{20}$, $r_{80}$
 \end{itemize}
+
+\vspace{2mm}
+\textbf{Objetivo:} Comparar arquitecturas solo-imagen vs híbridas (imagen + tabular) para determinar si las morfometrías aportan valor sobre representaciones convolucionales densas.
 }
 
-\block{2. Dataset}{
-\large
-\begin{tabular}{ll}
-\textbf{Total galaxias:}   & 1442 \\
-\textbf{Clumpy:}           & \textcolor{clumpyred}{\textbf{141 (9.8\%)}} \\
-\textbf{No clumpy:}        & \textcolor{noclumpygreen}{\textbf{1301 (90.2\%)}} \\
-\textbf{Imagenes:}         & PNG RGB 240$\times$240 px \\
-\textbf{Instrumento:}      & JWST/NIRCam \\
-\textbf{Campos:}           & COS4, GS4, GN4, G4, U4 \\
-\end{tabular}
-
-\vspace{5mm}
-\textbf{Etiqueta}: \texttt{visual\_clas.Clumpy} del catalogo
-\texttt{11\_05\_2026\_dictionary} (clasificacion visual experta).
-
-\vspace{5mm}
-\textbf{15 morfometrias por galaxia} (statmorph):
-\begin{multicols}{2}\small
-\begin{itemize}\itemsep0pt
-\item Gini
-\item $M_{20}$
-\item $F(G, M_{20})$
-\item $S(G, M_{20})$
-\item C (concentracion)
-\item A (asimetria)
-\item S (suavidad)
-\item $\text{S/N}$ / pixel
-\item Indice Sersic $n$
-\item $r_{\text{half}}$ Sersic
-\item Elipticidad
-\item Elongacion
-\item $r_{\text{petro,circ}}$
-\item $r_{20}$, $r_{80}$
-\end{itemize}
-\end{multicols}
-}
-
-% -------- COLUMNA 2 --------
-\column{0.33}
-\block{3. Arquitectura Hibrida}{
+% -------- COLUMNA 2: MODELO 1 (ConvNeXt solo imagen) --------
+\column{0.25}
+\block{\seccion{2}{ConvNeXt-Tiny (Solo Imagen)}}{
 \centering
+\vspace{17.25mm}
 \begin{tikzpicture}[
-    node distance=6mm,
+    node distance=5mm,
     every node/.style={font=\small\bfseries},
-    box/.style={rectangle, rounded corners=5pt, draw=astroblue,
-                fill=white, line width=1.5pt, minimum width=45mm,
+    box/.style={rectangle, rounded corners=3pt, draw=astroblue,
+                fill=white, line width=1pt, minimum width=35mm,
                 minimum height=12mm, align=center},
-    imgbox/.style={box, fill=astrocyan!20},
-    tabbox/.style={box, fill=astrogold!20},
-    fusebox/.style={box, fill=noclumpygreen!20, minimum width=55mm},
-    outbox/.style={box, fill=clumpyred!30, minimum width=55mm, minimum height=15mm},
-    arrow/.style={-{Stealth[length=4mm]}, line width=1.8pt, color=astroblue}
+    imgbox/.style={box, fill=astrogray!20},
+    outbox/.style={box, fill=clumpyred!30, minimum width=42mm, minimum height=12mm},
+    arrow/.style={-{Stealth[length=3.5mm]}, line width=1.5pt, color=astroblue}
 ]
 
-% Entradas
-\node[imgbox] (img) at (-6,4) {Imagen JWST\\ 224$\times$224$\times$3};
-\node[tabbox] (tab) at (6,4) {15 morfometrias\\ (Gini, $M_{20}$, S, ...)};
+\node[imgbox] (img) at (0,4) {Imagen JWST\\ 224$\times$224$\times$3};
+\node[imgbox, minimum height=15mm] (convnext) at (0,0.5) {ConvNeXt-Tiny\\ pre-entrenado};
+\node[box, fill=astrogray!40] (feat) at (0,-3) {Features $\mathbb{R}^{768}$};
+\node[outbox] (out) at (0,-6) {Clumpy / No-Clumpy};
 
-% Backbones
-\node[imgbox, minimum height=18mm] (convnext) at (-6,1.5) {ConvNeXt-Tiny\\ pre-entrenado ImageNet\\ (backbone congelado 5 ep)};
-\node[tabbox, minimum height=18mm] (mlp) at (6,1.5) {MLP\\ Linear(15$\to$128)\\ ReLU + Dropout};
+\draw[arrow] (img) -- (convnext);
+\draw[arrow] (convnext) -- (feat);
+\draw[arrow] (feat) -- (out);
 
-% Features
-\node[box, fill=astrocyan!40] (imgfeat) at (-6,-1.5) {Features imagen\\ $\mathbb{R}^{768}$};
-\node[box, fill=astrogold!40] (tabfeat) at (6,-1.5) {Features tabular\\ $\mathbb{R}^{128}$};
+\end{tikzpicture}
 
-% Fusion
-\node[fusebox] (concat) at (0,-4) {Concatenacion\\ $\mathbb{R}^{896}$};
+\vspace{17.25mm}
+\raggedright\small
+\textbf{Arquitectura:} Solo backbone convolucional. Sin componentes tabulares.\\
+\textbf{Validación:} 5-Fold Stratified CV\\
+\textbf{F1:} 0.58 $\pm$ 0.07 \quad \textbf{ROC-AUC:} 0.90 \quad \textbf{PR-AUC:} 0.49\\
+\textbf{Limitación:} No aprovecha morfometrías explícitas.
+}
 
-% Classifier
-\node[fusebox, fill=astrogold!30] (fc) at (0,-6.5) {Linear(896 $\to$ 1)};
+% -------- COLUMNA 3: MODELO 2 (ConvNeXt híbrido v2.1) --------
+\column{0.25}
+\block{\seccion{3}{ConvNeXt Híbrido v2.1 $\star$}}{
+\centering
+\vspace{32mm}
+\begin{tikzpicture}[
+    node distance=3mm,
+    every node/.style={font=\small\bfseries},
+    box/.style={rectangle, rounded corners=3pt, draw=astroblue,
+                fill=white, line width=1pt, minimum width=25mm,
+                minimum height=8mm, align=center},
+    imgbox/.style={box, fill=astrogray!20},
+    tabbox/.style={box, fill=astrogold!20},
+    fusebox/.style={box, fill=noclumpygray!20, minimum width=32mm},
+    outbox/.style={box, fill=clumpyred!30, minimum width=32mm, minimum height=10mm},
+    arrow/.style={-{Stealth[length=2.5mm]}, line width=1.2pt, color=astroblue}
+]
 
-% Output
-\node[outbox] (out) at (0,-9.5) {\Large Clumpy / No-Clumpy\\ \small(sigmoid + umbral optimizado)};
+\node[imgbox] (img) at (-3.5,2.5) {Imagen\\ 224$\times$224$\times$3};
+\node[tabbox] (tab) at (3.5,2.5) {15 morfometrías};
+\node[imgbox, minimum height=11mm] (convnext) at (-3.5,0.3) {ConvNeXt-Tiny\\ (congelado 5 ep)};
+\node[tabbox, minimum height=11mm] (mlp) at (3.5,0.3) {MLP\\ Linear(15$\to$128)};
+\node[box, fill=astrogray!40] (imgfeat) at (-3.5,-1.8) {$\mathbb{R}^{768}$};
+\node[box, fill=astrogold!40] (tabfeat) at (3.5,-1.8) {$\mathbb{R}^{128}$};
+\node[fusebox] (concat) at (0,-3.5) {Concat $\mathbb{R}^{896}$};
+\node[outbox] (out) at (0,-5.5) {Clumpy / No-Clumpy};
 
-% Arrows
 \draw[arrow] (img) -- (convnext);
 \draw[arrow] (tab) -- (mlp);
 \draw[arrow] (convnext) -- (imgfeat);
 \draw[arrow] (mlp) -- (tabfeat);
 \draw[arrow] (imgfeat) -| (concat);
 \draw[arrow] (tabfeat) -| (concat);
-\draw[arrow] (concat) -- (fc);
-\draw[arrow] (fc) -- (out);
+\draw[arrow] (concat) -- (out);
 
 \end{tikzpicture}
 
-\vspace{3mm}
-\raggedright\large
-\textbf{Loss:} Focal Loss ($\alpha=0.9$, $\gamma=2$) para clase minoritaria.\\
-\textbf{Sampler:} \texttt{WeightedRandomSampler} balancea batches en train.\\
-\textbf{Optimizer:} AdamW, LR = $2\text{e-}4$ (head) $\to$ $5\text{e-}5$ (fine-tune).\\
-\textbf{Scheduler:} CosineAnnealingLR con freeze de 5 epocas.
+\vspace{32mm}
+\raggedright\small
+\textbf{Arquitectura:} ConvNeXt + MLP tabular. Fusión tardía.\\
+\textbf{Validación:} 10-Fold Stratified CV + TTA (4 aug)\\
+\textbf{F1:} \textbf{0.62 $\pm$ 0.12} $\leftarrow$ \textbf{MEJOR}\\
+\textbf{ROC-AUC:} \textbf{0.89} \quad \textbf{PR-AUC:} \textbf{0.57}\\
+\textbf{Ventaja:} Combina features visuales densos + morfometrías explícitas.
 }
 
-\block{4. Estrategia de Entrenamiento y Validacion}{
-\large
-\begin{itemize}
-\item \textbf{10-Fold Stratified CV}: cada galaxia en exactamente 1 fold de val.
-\item \textbf{Scaler por fold}: normalizacion Z-score ajustada solo en train (sin leakage).
-\item \textbf{TTA (4 augmentaciones)}: original, flip-H, flip-V, flip-HV en evaluacion.
-\item \textbf{Ensemble final}: promedio de los 10 modelos entrenados $\times$ 4 aug TTA = \textbf{40 predicciones por muestra}.
-\item \textbf{Umbral optimo}: buscado en val (rango 0.01--0.99).
-\item \textbf{Mixed precision (AMP)}: acelera en GPU T4.
-\item \textbf{Sin retrain final}: se usa directamente el ensemble como modelo desplegable.
-\end{itemize}
+% -------- COLUMNA 4: MODELO 3 (ResNet-50 híbrido) --------
+\column{0.25}
+\block{\seccion{4}{ResNet-50 Híbrido}}{
+\centering
+\vspace{28.1mm}
+\begin{tikzpicture}[
+    node distance=3mm,
+    every node/.style={font=\small\bfseries},
+    box/.style={rectangle, rounded corners=3pt, draw=astroblue,
+                fill=white, line width=1pt, minimum width=25mm,
+                minimum height=8mm, align=center},
+    imgbox/.style={box, fill=astrogray!20},
+    tabbox/.style={box, fill=astrogold!20},
+    fusebox/.style={box, fill=noclumpygray!20, minimum width=32mm},
+    outbox/.style={box, fill=clumpyred!30, minimum width=32mm, minimum height=10mm},
+    arrow/.style={-{Stealth[length=2.5mm]}, line width=1.2pt, color=astroblue}
+]
 
-\vspace{3mm}
-\small\textit{Notebook implementacion: \texttt{clumpy\_classifier\_convnext\_hybrid\_v2\_1.ipynb}
-(v2.1 sin MixUp ni Label Smoothing, tras auditoria de bugs).}
+\node[imgbox] (img) at (-3.5,2.5) {Imagen\\ 224$\times$224$\times$3};
+\node[tabbox] (tab) at (3.5,2.5) {10 morfometrías};
+\node[imgbox, minimum height=11mm] (resnet) at (-3.5,0.3) {ResNet-50\\ pre-entrenado};
+\node[tabbox, minimum height=11mm] (mlp) at (3.5,0.3) {MLP\\ Linear(10$\to$128)};
+\node[box, fill=astrogray!40] (imgfeat) at (-3.5,-1.8) {$\mathbb{R}^{2048}$};
+\node[box, fill=astrogold!40] (tabfeat) at (3.5,-1.8) {$\mathbb{R}^{128}$};
+\node[fusebox] (concat) at (0,-3.5) {Concat $\mathbb{R}^{2176}$};
+\node[outbox] (out) at (0,-5.5) {Clumpy / No-Clumpy};
+
+\draw[arrow] (img) -- (resnet);
+\draw[arrow] (tab) -- (mlp);
+\draw[arrow] (resnet) -- (imgfeat);
+\draw[arrow] (mlp) -- (tabfeat);
+\draw[arrow] (imgfeat) -| (concat);
+\draw[arrow] (tabfeat) -| (concat);
+\draw[arrow] (concat) -- (out);
+
+\end{tikzpicture}
+
+\vspace{28.1mm}
+\raggedright\small
+\textbf{Arquitectura:} ResNet-50 + MLP tabular. Fusión tardía.\\
+\textbf{Validación:} 5-Fold Stratified CV\\
+\textbf{F1:} 0.50 $\leftarrow$ \textbf{PEOR}\\
+\textbf{ROC-AUC:} 0.86 \quad \textbf{PR-AUC:} 0.38\\
+\textbf{Limitación:} Backbone más pesado (2048 features) no compensa con solo 141 clumpy. Overfitting probable.
 }
 
-% -------- COLUMNA 3 --------
+\end{columns}
+
+% =====================================================================
+% FILA 2: 3 COLUMNAS (LOSS | ROC/PR | CONFUSION)
+% =====================================================================
+\begin{columns}
+
+% -------- COLUMNA 1: CURVAS DE LOSS --------
 \column{0.33}
-\block{5. Resultados por Fold}{
+\block{\seccion{5}{Curvas de Entrenamiento}}{
 \centering
-% Reemplazar con imagen real de barras por fold
-% \includegraphics[width=0.95\linewidth]{v2_1_cv_metrics.png}
-\vspace{2mm}
-\includegraphics[width=0.98\linewidth,keepaspectratio]{figs/cv_metrics.png}
-\vspace{2mm}
+\includegraphics[width=0.95\linewidth,height=6cm,keepaspectratio]{figs/comparativa_loss_curves.png}
 
+\vspace{2mm}
 \small\raggedright
-\textit{F1, precision, recall y ROC-AUC por fold (10-fold CV con TTA).
-Std alta en F1 (0.12) refleja la sensibilidad del split con solo 141 clumpy totales.}
+\textit{Loss de validación promedio por fold. ConvNeXt híbrido v2.1 converge más rápido y a menor loss. ResNet-50 muestra signos de overfitting.}
 }
 
-\block{6. Curvas ROC / PR y Matriz de Confusion}{
+% -------- COLUMNA 2: CURVAS ROC/PR --------
+\column{0.33}
+\block{\seccion{6}{Curvas ROC y PR}}{
 \centering
-\includegraphics[width=0.98\linewidth,keepaspectratio]{figs/cv_curves.png}
+\begin{minipage}{0.49\linewidth}
+\centering
+\includegraphics[width=0.95\linewidth,height=6cm,keepaspectratio]{figs/comparativa_roc_curves.png}
+\end{minipage}
+\hfill
+\begin{minipage}{0.49\linewidth}
+\centering
+\includegraphics[width=0.95\linewidth,height=6cm,keepaspectratio]{figs/comparativa_pr_curves.png}
+\end{minipage}
 
-\vspace{3mm}\small\raggedright
-\textit{Predicciones out-of-fold agregadas. La ROC muestra buena
-discriminacion (AUC = 0.89). La PR curve refleja el desafio del desbalance:
-AP = 0.51 vs baseline aleatorio = 0.098 (\textbf{5$\times$ mejor}).
-La matriz de confusion usa el umbral optimo pooled.}
+\vspace{2mm}
+\small\raggedright
+\textit{Izq: Curvas ROC (AUC: 0.90, 0.89, 0.86). Der: Curvas PR (AP: 0.49, 0.57, 0.38 vs baseline 0.098).}
+}
+
+% -------- COLUMNA 3: MATRICES DE CONFUSIÓN --------
+\column{0.34}
+\block{\seccion{7}{Matrices de Confusión}}{
+\centering
+\includegraphics[width=0.85\linewidth,height=6cm,keepaspectratio]{figs/comparativa_confusion_matrices.png}
+
+\vspace{2mm}
+\small\raggedright
+\textit{Matrices de confusión con umbral óptimo por modelo. ConvNeXt híbrido v2.1 balancea mejor precision y recall.}
 }
 
 \end{columns}
 
 % =====================================================================
-% FILA 2: COMPARACION MODELOS + DISCUSION
+% FILA 3: DISCUSIÓN + CONCLUSIONES
 % =====================================================================
 \begin{columns}
 
+% -------- COLUMNA 1: DISCUSIÓN --------
 \column{0.5}
-\block{7. Comparacion de Arquitecturas Evaluadas}{
-\centering\large
-\begin{tabular}{lcc}
-\toprule
-\rowcolor{astroblue!20} \textbf{Modelo} & \textbf{F1 CV} & \textbf{ROC-AUC} \\
-\midrule
-ConvNeXt-Tiny (solo imagen)          & 0.58 $\pm$ 0.07 & 0.90 \\
-ConvNeXt hibrido (10 feat, 5-fold)   & 0.59 $\pm$ 0.06 & 0.87 \\
-\rowcolor{astrogold!20}
-\textbf{ConvNeXt hibrido v2.1} \textbf{$\star$}       & \textbf{0.62 $\pm$ 0.12} & \textbf{0.89} \\
-\quad (15 feat + TTA + 10-fold)      &                 &      \\
-ResNet-50 hibrido                    & 0.50            & 0.86 \\
-v2 (con MixUp + LS)                  & 0.58 $\pm$ 0.08 & 0.89 \\
-\bottomrule
-\end{tabular}
+\block{\seccion{8}{Discusión Comparativa}}{
+\large
+\textbf{¿Por qué ConvNeXt híbrido v2.1 es el mejor?}
+\begin{itemize}\itemsep1pt
+\item \textbf{Fusión tardía} (imagen + tabular) permite que el backbone capture features visuales densos mientras el MLP aporta información morfométrica explícita.
+\item \textbf{15 features tabulares} (vs 10 en ResNet) incluye $F(G, M_{20})$, $S(G, M_{20})$, radios de Petrosian, que capturan estructura espacial complementaria.
+\item \textbf{10-Fold CV + TTA} reduce varianza en evaluación (std F1 = 0.12 vs 0.07 en 5-fold).
+\end{itemize}
 
-\vspace{5mm}
-\raggedright\large\textbf{Auditoria y correccion de bugs:}
-Durante el desarrollo se identifico un \textbf{bug de \textit{data leakage}} en
-la version base del hibrido (unpacking incorrecto de \texttt{make\_loaders}
-que hacia evaluar sobre \texttt{train\_loader} con oversampling). Esto inflaba
-artificialmente el F1 a 0.76. Tras el fix, todos los modelos fueron
-re-validados con metricas honestas.
+\vspace{2mm}
+\textbf{¿Por qué ResNet-50 falla?}
+\begin{itemize}\itemsep1pt
+\item \textbf{Overparameterización:} 2048 features de imagen + 128 tabulares = 2176 dimensions para solo 141 clumpy. Overfitting severo.
+\item \textbf{Menos datos de entrenamiento} (5-fold vs 10-fold) y sin TTA.
+\item \textbf{Arquitectura más antigua:} ResNet-50 (2015) vs ConvNeXt (2022).
+\end{itemize}
 
-\vspace{3mm}
-\textbf{v2.1} es la version final: elimina el retrain sobre samples completo
-(evita segundo leakage), usa \textbf{15 features tabulares} (agrega
-$F(G, M_{20})$, $S(G, M_{20})$, $r_{\text{petro,circ}}$, $r_{20}$, $r_{80}$),
-y aplica \textbf{TTA en cada fold} para reducir varianza en evaluacion.
-Ademas se auditaron y corrigieron bugs menores: \texttt{best\_state}
-inicializado, rango de umbral ampliado (0.01--0.99), y guard clause para
-folds con clase unica.
+\vspace{2mm}
+\textbf{¿Vale la pena el componente híbrido?}
+\begin{itemize}\itemsep1pt
+\item \textbf{Sí, marginalmente:} +4\% F1 sobre solo-imagen (0.62 vs 0.58).
+\item \textbf{Pero:} ConvNeXt ya captura buena parte de las morfometrías implícitamente. La ganancia híbrida es modesta.
+\item \textbf{Tradeoff:} Complejidad adicional (scaler por fold, 15 features) vs ganancia pequeña.
+\end{itemize}
+
+\vspace{2mm}
+\textbf{Auditoría de bugs:} Se detectó y corrigió \textit{data leakage} en versiones previas (unpacking incorrecto de \texttt{make\_loaders} que evaluaba sobre train con oversampling). Esto inflaba F1 a 0.76. El F1 real depurado es 0.62.
 }
 
+% -------- COLUMNA 2: CONCLUSIONES + TRABAJO FUTURO --------
 \column{0.5}
-\block{8. Discusion}{
+\block{\seccion{9}{Conclusiones y Trabajo Futuro}}{
 \large
-\textbf{Fortalezas:}
-\begin{itemize}
-\item Discriminacion solida (ROC-AUC = 0.89): el modelo ordena correctamente
-las galaxias por probabilidad de ser clumpy.
-\item Pipeline robusto sin \textit{data leakage}: scaler por fold, val disjunta,
-umbral optimizado en val (no en test).
-\item El componente hibrido \textbf{imagen + tabular} aporta marginalmente
-sobre solo-imagen (F1 = 0.62 vs 0.58), sugiriendo que ConvNeXt ya captura
-buena parte de las morfometrias implicitamente.
+\textbf{Conclusiones:}
+\begin{itemize}\itemsep1pt
+\item \textbf{ConvNeXt híbrido v2.1} es el modelo recomendado (F1=0.62, ROC-AUC=0.89), superando a ResNet-50 (F1=0.50) y al baseline solo-imagen (F1=0.58).
+\item El \textbf{componente híbrido} (imagen + tabular) aporta +4\% F1, pero la ganancia es marginal: ConvNeXt ya captura morfometrías implícitamente.
+\item \textbf{ResNet-50} bajo rendimiento por overparameterización y arquitectura más antigua.
+\item La \textbf{auditoría de bugs} fue crítica: el pipeline inicial reportaba F1=0.76 (inflado por leakage). El F1 real es 0.62.
 \end{itemize}
 
-\vspace{4mm}
-\textbf{Limitaciones:}
-\begin{itemize}
-\item \textbf{Techo por tamano del dataset}: multiples arquitecturas
-(ConvNeXt, ResNet-50, EfficientNet) convergen a F1 = 0.50--0.67 con solo
-141 ejemplos positivos. La limitacion es de datos, no de modelo.
-\item \textbf{Precision moderada} (0.64): $\sim$1 de cada 2 predicciones
-``clumpy'' es correcta; insuficiente para pipelines totalmente automatizados.
-\item \textbf{Variabilidad de recall} entre folds ($\sigma = 0.16$):
-sensible a que galaxias clumpy caen en val.
-\end{itemize}
-
-\vspace{4mm}
-\textbf{Comparacion con literatura:}
-Nuestro F1 = 0.62 esta en el rango tipico reportado para clasificacion binaria
-de morfologias raras con datasets similares (F1 = 0.50--0.75). Ensemble
-multi-arquitectura + TTA en state-of-art alcanza F1 = 0.65--0.75.
-}
-
-\end{columns}
-
-% =====================================================================
-% FILA FINAL: CONCLUSIONES + FUTURO + REFERENCIAS + QR
-% =====================================================================
-\begin{columns}
-
-\column{0.5}
-\block{9. Conclusiones y Trabajo Futuro}{
-\large
-\begin{itemize}
-\item El clasificador hibrido \textbf{ConvNeXt-Tiny + MLP} logra
-\textbf{F1 = 0.62 $\pm$ 0.12} con \textbf{ROC-AUC = 0.89} en validacion
-cruzada honesta, siendo competitivo con la literatura para tareas
-similares con desbalance severo.
-\item El modelo aprende \textbf{morfologia diferencial} y no colapsa a
-la clase mayoritaria (recall = 0.62 sobre clase minoritaria = 6$\times$ mejor que baseline).
-\item Las morfometrias estadisticas aportan poca informacion adicional
-al backbone convolucional moderno.
-\item La \textbf{auditoria de bugs} fue clave: el pipeline inicial reportaba
-F1 = 0.76 (inflado por leakage). El F1 real es 0.62 tras las correcciones.
-\end{itemize}
-
-\vspace{4mm}
+\vspace{2mm}
 \textbf{Direcciones futuras:}
-\begin{itemize}
-\item \textbf{Pseudo-labeling}: entrenar sobre galaxias no etiquetadas usando
-predicciones de alta confianza.
-\item \textbf{Pre-entrenamiento self-supervised} sobre imagenes JWST no
-etiquetadas (SimCLR, DINO, MAE) para mejor inicializacion.
-\item \textbf{Ensemble multi-arquitectura}: combinar ConvNeXt +
-EfficientNet + Vision Transformer.
-\item \textbf{Anotacion adicional}: expandir el conjunto etiquetado con
-mas expertos y validacion espectroscopica.
-\item \textbf{Segmentacion de clumps}: pasar de clasificacion binaria a
-localizacion de clumps individuales dentro de cada galaxia.
+\begin{itemize}\itemsep1pt
+\item \textbf{Pre-entrenamiento self-supervised} (DINO, MAE) sobre imágenes JWST no etiquetadas.
+\item \textbf{Ensemble multi-arquitectura}: combinar ConvNeXt + EfficientNet + Vision Transformer.
+\item \textbf{Segmentación de clumps}: pasar de clasificación binaria a localización de clumps individuales.
+\item \textbf{Anotación adicional}: expandir el dataset con más expertos y validación espectroscópica.
 \end{itemize}
 }
 
-\column{0.5}
-\block{Referencias}{
-\small
-\begin{enumerate}\itemsep2pt
-\item Liu, Z. et al. (2022). \textit{A ConvNet for the 2020s (ConvNeXt)}.
-CVPR 2022.
-\item Lin, T-Y. et al. (2017). \textit{Focal Loss for Dense Object Detection}.
-ICCV 2017.
-\item Rodriguez-Gomez, V. et al. (2019). \textit{statmorph: Python code for
-calculating non-parametric morphological diagnostics of galaxy images}.
-MNRAS 483:4140.
-\item Lotz, J. et al. (2008). \textit{Galaxy morphology in the Gini-M20 plane}.
-MNRAS 391:1137.
-\item Deng, J. et al. (2009). \textit{ImageNet: A Large-Scale Hierarchical
-Image Database}. CVPR 2009.
-\item Gardner, J. et al. (2023). \textit{The James Webb Space Telescope
-Mission}. PASP 135:1048.
-\item Wuyts, S. et al. (2012). \textit{Smooth(er) Stellar Mass Maps in CANDELS:
-Constraints on the Longevity of Clumps in High-Redshift Star-Forming Galaxies}.
-ApJ 753:114.
-\end{enumerate}
-}
+\end{columns}
 
-\block{Codigo, Datos y Reproducibilidad}{
+% =====================================================================
+% FILA FINAL: REFERENCIAS + CÓDIGO + QR (ancho completo)
+% =====================================================================
+\block{Referencias, Código y Reproducibilidad}{
+\begin{columns}
+\column{0.5}
+\small
+\begin{enumerate}\itemsep1pt
+\item Liu, Z. et al. (2022). \textit{A ConvNet for the 2020s (ConvNeXt)}. CVPR 2022.
+\item He, K. et al. (2016). \textit{Deep Residual Learning for Image Recognition}. CVPR 2016.
+\item Lin, T-Y. et al. (2017). \textit{Focal Loss for Dense Object Detection}. ICCV 2017.
+\item Rodriguez-Gomez, V. et al. (2019). \textit{statmorph: Python code for calculating non-parametric morphological diagnostics of galaxy images}. MNRAS 483:4140.
+\item Lotz, J. et al. (2008). \textit{Galaxy morphology in the Gini-M20 plane}. MNRAS 391:1137.
+\item Deng, J. et al. (2009). \textit{ImageNet: A Large-Scale Hierarchical Image Database}. CVPR 2009.
+\item Gardner, J. et al. (2023). \textit{The James Webb Space Telescope Mission}. PASP 135:1048.
+\end{enumerate}
+
+\column{0.5}
 \centering
 \begin{minipage}[c]{0.35\linewidth}
 \centering
-\qrcode[height=6cm]{https://github.com/anomalyco/Proyecto-Semestral-Deep-Learning}\\[3mm]
+\qrcode[height=5cm]{https://github.com/Krozzito/Proyecto-Semestral-Deep-Learning}\\[2mm]
 \small\textbf{Repositorio GitHub}
 \end{minipage}
-\hspace{5mm}
+\hspace{3mm}
 \begin{minipage}[c]{0.55\linewidth}
 \large
-\textbf{Stack:} PyTorch 2.6 $|$ timm 1.0 $|$ scikit-learn 1.3 $|$ Google Colab (T4).\\[3mm]
-\textbf{Notebook final:} \\
-\texttt{clumpy\_classifier\_convnext\_hybrid\_v2\_1.ipynb}\\[3mm]
-\textbf{Modelo desplegable:} \texttt{ensemble\_clumpy\_v2\_1.pth}\\
-(10 ConvNeXt-Tiny + scalers + umbral, 15 features tabulares)\\[3mm]
-\textbf{Dataset:} 1442 galaxias JWST etiquetadas manualmente\\
-(catalogo \texttt{11\_05\_2026\_dictionary\_with\_all\_statmorph}).
+\textbf{Stack:} PyTorch 2.6 $|$ timm 1.0 $|$ scikit-learn 1.3 $|$ Google Colab (T4).\\[1mm]
+\textbf{Notebooks:}
+\begin{itemize}\itemsep0pt
+\item \texttt{\seqsplit{clumpy\_classifier\_convnext.ipynb}} (solo imagen)
+\item \texttt{\seqsplit{clumpy\_classifier\_convnext\_hybrid\_v2\_1.ipynb}} (híbrido $\star$)
+\item \texttt{\seqsplit{clumpy\_classifier\_resnet\_hybrid.ipynb}} (ResNet-50)
+\end{itemize}
+\textbf{Modelos:} Ensembles de 5-10 modelos por arquitectura.\\[1mm]
+\textbf{Dataset:} 1442 galaxias JWST etiquetadas manualmente.
 
-\vspace{3mm}
-Escanea el QR o visita el repositorio para reproducir todos los experimentos.
-
-\vspace{3mm}
-\small\textit{Agradecimientos: al equipo de anotacion del catalogo JWST y
-al programa Google Colab por acceso a GPU T4.}
+\vspace{1mm}
+\small\textit{Agradecimientos: Al equipo de anotación del catálogo JWST y al programa Google Colab por acceso a GPU T4.}
 \end{minipage}
-}
-
 \end{columns}
+}
 
 \end{document}

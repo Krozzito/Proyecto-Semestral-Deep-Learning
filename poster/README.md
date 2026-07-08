@@ -1,44 +1,48 @@
-# Poster A0 vertical - Clasificacion de Galaxias Clumpy
+# Poster A0 vertical - Comparativa de Arquitecturas para Clasificación de Galaxias Clumpy
 
-Poster cientifico en LaTeX (formato A0 vertical, 841 x 1189 mm) para la
-defensa del proyecto semestral de Deep Learning.
+Poster científico en LaTeX (formato A0 vertical, 841 x 1189 mm) para la defensa del proyecto semestral de Deep Learning.
 
-**Alineado con el notebook final:** `clumpy_classifier_convnext_hybrid_v2_1.ipynb`
+**Enfoque:** Comparativa empírica de 3 arquitecturas:
+1. ConvNeXt-Tiny (solo imagen)
+2. ConvNeXt-Tiny + MLP híbrido v2.1 (recomendado)
+3. ResNet-50 + MLP híbrido
 
-Metricas destacadas: **F1 = 0.62 ± 0.12**, ROC-AUC = 0.89 (10-Fold CV + TTA + ensemble)
+**Modelo destacado:** ConvNeXt híbrido v2.1 con **F1 = 0.62 ± 0.12**, ROC-AUC = 0.89
 
 ## Archivos
 
-- `poster.tex` — codigo fuente principal LaTeX
-- `figs/` — carpeta con imagenes PNG del notebook (ver `figs/README.md`)
+- `poster.tex` — código fuente principal LaTeX (versión comparativa)
+- `figs/` — carpeta con imágenes PNG comparativas (ver `figs/README.md`)
 - `README.md` — este archivo
 
 ## Antes de compilar: preparativos
 
-### 1. Preparar imagenes (2 archivos)
+### 1. Preparar imágenes comparativas (4 archivos)
 
-Copiar 2 imagenes PNG a `figs/` desde Google Drive tras correr el notebook:
+Generar manualmente las siguientes figuras y colocarlas en `figs/`:
 
-- `v2_1_cv_metrics.png` → renombrar a `figs/cv_metrics.png`
-- `v2_1_cv_curves.png`  → renombrar a `figs/cv_curves.png`
+| Archivo | Descripción |
+|---|---|
+| `comparativa_loss_curves.png` | Curvas de loss train/val para los 3 modelos |
+| `comparativa_roc_curves.png` | Curvas ROC superpuestas (AUC: 0.90, 0.89, 0.86) |
+| `comparativa_pr_curves.png` | Curvas Precision-Recall superpuestas (AP: 0.49, 0.57, 0.38) |
+| `comparativa_confusion_matrices.png` | 3 matrices de confusión (una por modelo) |
 
-Ver `figs/README.md` para detalles.
+Ver `figs/README.md` para detalles sobre cómo generarlas.
 
 ### 2. Personalizar campos
 
 Editar `poster.tex` y reemplazar los placeholders:
 
 ```latex
-Autor: [TU NOMBRE]            → tu nombre completo
-Guia: [NOMBRE DEL GUIA]       → nombre del guia/asesor
-[DEPARTAMENTO / CARRERA]      → tu departamento
-[UNIVERSIDAD]                 → nombre de la universidad
+Guía: [NOMBRE DEL GUÍA]       → nombre del guía/asesor
 ```
+
+El autor ya está completado: Daniel Ignacio Soto Salgado
 
 ### 3. Agregar logo de la universidad (opcional)
 
-Colocar el logo en `figs/logo_universidad.png` y descomentar la linea en
-`\titlegraphic{}`:
+Colocar el logo en `figs/logo_universidad.png` y descomentar la línea en `\titlegraphic{}`:
 
 ```latex
 \titlegraphic{
@@ -46,26 +50,26 @@ Colocar el logo en `figs/logo_universidad.png` y descomentar la linea en
 }
 ```
 
-### 4. Actualizar URL del QR code
+### 4. Verificar URL del QR code
 
-En la seccion "Codigo, Datos y Reproducibilidad", ajustar la URL si tu
-repo tiene otro nombre/usuario:
-
+En la sección "Código, Datos y Reproducibilidad", la URL del QR apunta a:
 ```latex
-\qrcode[height=6cm]{https://github.com/anomalyco/Proyecto-Semestral-Deep-Learning}
+\qrcode[height=5.5cm]{https://github.com/Krozzito/Proyecto-Semestral-Deep-Learning}
 ```
 
-## Como compilar
+Ajustar si tu repo tiene otro nombre/usuario.
 
-### Opcion A: Overleaf (recomendado, sin instalar nada)
+## Cómo compilar
 
-1. Ir a https://www.overleaf.com y crear cuenta gratis
+### Opción A: Overleaf (recomendado, sin instalar nada)
+
+1. Ir a https://www.overleaf.com y crear cuenta
 2. **New Project** → **Upload Project** → subir toda la carpeta `poster/`
 3. Asegurarse de que `poster.tex` sea el main document
 4. Compilar con **Recompile** (usa PDFLaTeX por defecto)
 5. Descargar el PDF resultante
 
-### Opcion B: Compilar local con TeX Live / MiKTeX
+### Opción B: Compilar local con TeX Live / MiKTeX
 
 ```bash
 cd poster
@@ -73,55 +77,62 @@ pdflatex poster.tex
 pdflatex poster.tex   # 2 pasadas para referencias cruzadas
 ```
 
-Requiere paquetes: `tikzposter`, `qrcode`, `babel-spanish`, `siunitx`,
-`booktabs`. Todos vienen en TeX Live full.
+Requiere paquetes: `tikzposter`, `qrcode`, `babel-spanish`, `siunitx`, `booktabs`, `colortbl`, `seqsplit`. Todos vienen en TeX Live full.
 
 ## Estructura visual del poster
 
 ```
 +----------------------------------------------------------+
-|                    TITULO GRANDE                         |
-|                    (dorado sobre azul)                   |
+|                    TÍTULO GRANDE                         |
+|            (dorado sobre azul con estrellas)             |
 +---------------------+------------------------------------+
-| RESUMEN (v2.1)      |      METRICAS FINALES              |
-| (65% ancho)         |      Tabla F1/AUC/Prec/Rec         |
+| RESUMEN COMPARATIVO |      MÉTRICAS FINALES              |
+| (55% ancho)         |      Tabla F1/AUC/PRAUC x 3 modelos|
 +---------------------+------------------------------------+
-| INTRODUCCION | ARQUITECTURA (TikZ)  | RESULTADOS POR FOLD |
-| DATASET      | ENTRENAMIENTO v2.1   | CURVAS ROC/PR/CM    |
-+--------------+----------------------+--------------------+
-|  COMPARACION DE MODELOS            |    DISCUSION        |
-|  (baseline vs hibrido vs v2.1 vs   |    (fortalezas /    |
-|   ResNet, con nota de bugs fixed)  |     limitaciones)   |
-+------------------------------------+---------------------+
+| INTRODUCCIÓN | MODELO 1: ConvNeXt  | MODELO 2: ConvNeXt  |
+| + DATASET    | solo imagen         | híbrido v2.1 ★      |
++--------------+---------------------+---------------------+
+| MODELO 3: ResNet-50 | COMPARATIVA DETALLADA | CURVAS LOSS|
+| (diagrama + métricas)| (tabla 6 métricas)    | (gráfico)  |
++---------------------+----------------------+-------------+
+|  RESULTADOS VISUALES (ROC + PR + Confusion Matrices)     |
+|                                            | DISCUSIÓN   |
+|                                            | COMPARATIVA |
++--------------------------------------------+-------------+
 |    CONCLUSIONES + TRABAJO FUTURO   | REFERENCIAS         |
 |                                    | + QR REPO GITHUB    |
 +------------------------------------+---------------------+
 ```
 
-## Contenido alineado con v2.1
+## Contenido alineado con comparativa
 
-El poster describe **especificamente v2.1** con:
-- 15 features tabulares (10 originales + `F(G,M20)`, `S(G,M20)`, `rpetro_circ`, `r20`, `r80`)
-- 10-Fold Stratified CV
-- TTA con 4 augmentaciones
-- Focal Loss sin label smoothing
-- Ensemble de 10 modelos + TTA
-- Sin retrain final (usa directamente el ensemble)
-- Mencion explicita del bug de leakage detectado y corregido
+El poster describe **específicamente** la comparativa de 3 modelos:
+
+### Modelo 1: ConvNeXt-Tiny (solo imagen)
+- Solo backbone convolucional, sin componentes tabulares
+- 5-Fold Stratified CV
+- F1 = 0.58 ± 0.07, ROC-AUC = 0.90, PR-AUC = 0.49
+
+### Modelo 2: ConvNeXt híbrido v2.1 ⭐ (recomendado)
+- ConvNeXt-Tiny + MLP con 15 features tabulares
+- 10-Fold Stratified CV + TTA (4 augmentaciones)
+- F1 = 0.62 ± 0.12, ROC-AUC = 0.89, PR-AUC = 0.57
+
+### Modelo 3: ResNet-50 híbrido
+- ResNet-50 + MLP con 10 features tabulares
+- 5-Fold Stratified CV
+- F1 = 0.50, ROC-AUC = 0.86, PR-AUC = 0.38
 
 ## Paleta de colores
 
-- **Azul oscuro** `#0A0E27` — fondo titulo
+- **Azul oscuro** `#0A0E27` — fondo título
 - **Azul medio** `#1B2A5C` — bordes de bloques
-- **Dorado** `#FFD700` — titulo, acentos
-- **Cyan** `#4FC3F7` — subtitulo
-- **Rojo** `#E63946` — clumpy
+- **Dorado** `#FFD700` — título, acentos, modelo destacado
+- **Cyan** `#4FC3F7` — subtítulo, ConvNeXt solo imagen
+- **Rojo** `#E63946` — clumpy, ResNet-50
 - **Verde** `#2A9D8F` — no-clumpy
 
-Para cambiar la paleta, editar el bloque de `\definecolor{...}` al inicio
-de `poster.tex`.
-
-## Solucion de problemas
+## Solución de problemas
 
 **Error: `File 'tikzposter.cls' not found`**
 - Overleaf lo trae por defecto. En local: `tlmgr install tikzposter`.
@@ -129,30 +140,29 @@ de `poster.tex`.
 **Error: `File 'qrcode.sty' not found`**
 - Overleaf lo trae. En local: `tlmgr install qrcode`.
 
-**Las imagenes no aparecen**
-- Verificar que `figs/cv_metrics.png` y `figs/cv_curves.png` existan.
+**Las imágenes no aparecen**
+- Verificar que las 4 figuras comparativas existan en `figs/`.
 - Ver `figs/README.md` para instrucciones.
 
 **Texto se sale de las cajas**
-- Reducir tamaño de fuente base cambiando `25pt` en la primera linea a `24pt`.
+- Reducir tamaño de fuente base cambiando `22pt` en la primera línea a `20pt`.
 - O acortar textos de los bloques.
 
 **El poster sale muy grande al imprimir**
 - Verificar que la imprenta usa formato A0 (841 x 1189 mm).
-- No usar "ajustar a pagina" en el visor de PDF antes de imprimir.
+- No usar "ajustar a página" en el visor de PDF antes de imprimir.
 
-## Impresion
+## Impresión
 
 - **Formato**: A0 vertical (841 x 1189 mm)
-- **Resolucion recomendada**: 300 DPI
+- **Resolución recomendada**: 300 DPI
 - **Papel**: mate satinado (evita reflejos bajo luz del auditorio)
 - **Servicios**: PhotoBox, Vistaprint, imprentas locales de plotters
 
 ## Tiempo estimado
 
-- Preparar 2 imagenes: 10 min
-- Personalizar campos: 10 min
-- Primera compilacion + ajustes: 30 min
-- Revision final: 30 min
+- Preparar 4 imágenes comparativas: 30 min
+- Personalizar campos: 5 min
+- Primera compilación + ajustes: 30 min
+- Revisión final: 30 min
 - **Total: ~1.5 horas**
-
