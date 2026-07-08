@@ -182,16 +182,16 @@ Las \textbf{galaxias clumpy} presentan múltiples núcleos brillantes, indicador
     node distance=5mm,
     every node/.style={font=\small\bfseries},
     box/.style={rectangle, rounded corners=3pt, draw=astroblue,
-                fill=astrogray!5, line width=1pt, minimum width=35mm,
+                fill=astrogray!30, line width=1pt, minimum width=35mm,
                 minimum height=12mm, align=center},
-    imgbox/.style={box, fill=astrogray!20},
-    outbox/.style={box, fill=clumpyred!30, minimum width=42mm, minimum height=12mm},
+    imgbox/.style={box, fill=astrogray!50},
+    outbox/.style={box, fill=clumpyred!50, minimum width=42mm, minimum height=12mm},
     arrow/.style={-{Stealth[length=3.5mm]}, line width=1.5pt, color=astroblue}
 ]
 
 \node[imgbox] (img) at (0,4) {Imagen JWST\\ 224$\times$224$\times$3};
 \node[imgbox, minimum height=15mm] (convnext) at (0,0.5) {ConvNeXt-Tiny\\ pre-entrenado};
-\node[box, fill=astrogray!40] (feat) at (0,-3) {Features $\mathbb{R}^{768}$};
+\node[box, fill=astrogray!60] (feat) at (0,-3) {Features $\mathbb{R}^{768}$};
 \node[outbox] (out) at (0,-6) {Clumpy / No-Clumpy};
 
 \draw[arrow] (img) -- (convnext);
@@ -217,12 +217,12 @@ Las \textbf{galaxias clumpy} presentan múltiples núcleos brillantes, indicador
     node distance=3mm,
     every node/.style={font=\small\bfseries},
     box/.style={rectangle, rounded corners=3pt, draw=astroblue,
-                fill=astrogray!5, line width=1pt, minimum width=25mm,
+                fill=astrogray!30, line width=1pt, minimum width=25mm,
                 minimum height=8mm, align=center},
-    imgbox/.style={box, fill=astrogray!20},
-    tabbox/.style={box, fill=astrogold!20},
-    fusebox/.style={box, fill=noclumpygray!20, minimum width=32mm},
-    outbox/.style={box, fill=clumpyred!30, minimum width=32mm, minimum height=10mm},
+    imgbox/.style={box, fill=astrogray!50},
+    tabbox/.style={box, fill=astrogold!50},
+    fusebox/.style={box, fill=noclumpygray!40, minimum width=32mm},
+    outbox/.style={box, fill=clumpyred!50, minimum width=32mm, minimum height=10mm},
     arrow/.style={-{Stealth[length=2.5mm]}, line width=1.2pt, color=astroblue}
 ]
 
@@ -230,8 +230,8 @@ Las \textbf{galaxias clumpy} presentan múltiples núcleos brillantes, indicador
 \node[tabbox] (tab) at (3.5,2.5) {15 morfometrías};
 \node[imgbox, minimum height=11mm] (convnext) at (-3.5,0.3) {ConvNeXt-Tiny\\ (congelado 5 ep)};
 \node[tabbox, minimum height=11mm] (mlp) at (3.5,0.3) {MLP\\ Linear(15$\to$128)};
-\node[box, fill=astrogray!40] (imgfeat) at (-3.5,-1.8) {$\mathbb{R}^{768}$};
-\node[box, fill=astrogold!40] (tabfeat) at (3.5,-1.8) {$\mathbb{R}^{128}$};
+\node[box, fill=astrogray!60] (imgfeat) at (-3.5,-1.8) {$\mathbb{R}^{768}$};
+\node[box, fill=astrogold!60] (tabfeat) at (3.5,-1.8) {$\mathbb{R}^{128}$};
 \node[fusebox] (concat) at (0,-3.5) {Concat $\mathbb{R}^{896}$};
 \node[outbox] (out) at (0,-5.5) {Clumpy / No-Clumpy};
 
@@ -263,12 +263,12 @@ Las \textbf{galaxias clumpy} presentan múltiples núcleos brillantes, indicador
     node distance=3mm,
     every node/.style={font=\small\bfseries},
     box/.style={rectangle, rounded corners=3pt, draw=astroblue,
-                fill=astrogray!5, line width=1pt, minimum width=25mm,
+                fill=astrogray!30, line width=1pt, minimum width=25mm,
                 minimum height=8mm, align=center},
-    imgbox/.style={box, fill=astrogray!20},
-    tabbox/.style={box, fill=astrogold!20},
-    fusebox/.style={box, fill=noclumpygray!20, minimum width=32mm},
-    outbox/.style={box, fill=clumpyred!30, minimum width=32mm, minimum height=10mm},
+    imgbox/.style={box, fill=astrogray!50},
+    tabbox/.style={box, fill=astrogold!50},
+    fusebox/.style={box, fill=noclumpygray!40, minimum width=32mm},
+    outbox/.style={box, fill=clumpyred!50, minimum width=32mm, minimum height=10mm},
     arrow/.style={-{Stealth[length=2.5mm]}, line width=1.2pt, color=astroblue}
 ]
 
@@ -276,8 +276,8 @@ Las \textbf{galaxias clumpy} presentan múltiples núcleos brillantes, indicador
 \node[tabbox] (tab) at (3.5,2.5) {10 morfometrías};
 \node[imgbox, minimum height=11mm] (resnet) at (-3.5,0.3) {ResNet-50\\ pre-entrenado};
 \node[tabbox, minimum height=11mm] (mlp) at (3.5,0.3) {MLP\\ Linear(10$\to$128)};
-\node[box, fill=astrogray!40] (imgfeat) at (-3.5,-1.8) {$\mathbb{R}^{2048}$};
-\node[box, fill=astrogold!40] (tabfeat) at (3.5,-1.8) {$\mathbb{R}^{128}$};
+\node[box, fill=astrogray!60] (imgfeat) at (-3.5,-1.8) {$\mathbb{R}^{2048}$};
+\node[box, fill=astrogold!60] (tabfeat) at (3.5,-1.8) {$\mathbb{R}^{128}$};
 \node[fusebox] (concat) at (0,-3.5) {Concat $\mathbb{R}^{2176}$};
 \node[outbox] (out) at (0,-5.5) {Clumpy / No-Clumpy};
 
